@@ -9,14 +9,19 @@ class Match < ApplicationRecord
 
     array = all_students_names
 
-      while array.length>0
-        random_key = array[rand(array.length-1)]
-        hash[array[-1]] = random_key
-        array.reject!{|el| el == random_key}
-        array.pop
-      end
+    while array.length>0
+      random_key = array[rand(array.length-1)]
+      hash[array[-1]] = random_key
+      array.reject!{|el| el == random_key}
+      array.pop
+    end
 
+    if Match.last.created_at.min == Time.now.min
+      Match.last.destroy
       Match.create(pairing: hash)
+    else
+      Match.create(pairing: hash)
+    end
   end
 
 end
