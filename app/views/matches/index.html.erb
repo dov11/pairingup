@@ -2,3 +2,5 @@
 <%@matches.each do |match|%>
 <p><%= link_to match.created_at, match%></p>
 <%end%>
+
+<%= link_to "Create match", matches_path, method: :create%>
