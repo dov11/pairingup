@@ -1,6 +1,9 @@
 <h1> Matches:</h1>
 <%@matches.each do |match|%>
-<p><%= link_to match.created_at, match%></p>
+  <p><%= link_to match.created_at, match%></p>
+  <%match.pairing.each do |key, value|%>
+    <p><%= key%> ---- <%=value%>
+  <%end%>
 <%end%>
 
 <%= link_to "Create match", matches_path, method: :create%>
