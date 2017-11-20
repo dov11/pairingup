@@ -7,4 +7,4 @@ student2 = User.create(email: "vak@gmail.com", password: "123456")
 student3 = User.create(email: "john@gmail.com", password: "123456")
 student4 = User.create(email: "mary@gmail.com", password: "123456")
 
-match1 = Match.create(pairing: {student1: student3, student2: student4})
+match1 = Match.create(pairing: { "2" => "4", "3" => "5"})
