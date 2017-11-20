@@ -1,3 +1,4 @@
+Match.destroy_all
 User.destroy_all
 
 admin = User.create(email: "admin@gmail.com", password: "123456", admin: true)
