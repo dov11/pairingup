@@ -1,6 +1,6 @@
 class MatchesController < ApplicationController
   def index
-    @matches = Match.all
+    @matches = Match.sort_by_created_asc.all
   end
 
   def show
