@@ -5,16 +5,17 @@
     <p><%= key%> ---- <%=value%></p>
   <%end%>
 <%end%>
-
-<%= link_to "Create match", matches_path, method: :create%>
-<div class="panel-body">
-<%= form_tag(url: matches_path, method: :create) do%>
-  <div class="form-group">
-    <label>Select date</label>
-    <%= date_select(:match, :pairing_date)%>
-  </div>
-  <div class="actions">
-    <%= submit_tag("Create matches", class: "btn btn-primary") %>
+<% if current_user.try(:admin?)%>
+  <%= link_to "Create match", matches_path, method: :create%>
+  <div class="panel-body">
+  <%= form_tag(url: matches_path, method: :create) do%>
+    <div class="form-group">
+      <label>Select date</label>
+      <%= date_select(:match, :pairing_date)%>
+    </div>
+    <div class="actions">
+      <%= submit_tag("Create matches", class: "btn btn-primary") %>
+    </div>
+  <%end%>
   </div>
 <%end%>
-</div>

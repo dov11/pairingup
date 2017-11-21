@@ -1,5 +1,31 @@
 class MatchesController < ApplicationController
   def index
+    @matches = get_matches
+  end
+
+  def show
+    @match=get_match
+  end
+
+  def create
+    if current_user.try(:admin?)
+      @match = Match.create_match(pairing_date)
+      redirect_to matches_path
+    else
+      redirect_to matches_path, notice: "Please don't"
+    end
+  end
+
+  private
+  def get_match
+    if current_user.try(:admin?)
+      @match=Match.find(params[:id])
+    else
+      @match=Match.find(params[:id]).select_my_pairings(current_user)
+    end
+  end
+
+  def get_matches
     if current_user.try(:admin?)
       @matches = Match.sort_by_created_asc.all
     else
@@ -7,16 +33,6 @@ class MatchesController < ApplicationController
     end
   end
 
-  def show
-    @match=Match.find(params[:id])
-  end
-
-  def create
-    @match = Match.create_match(pairing_date)
-    redirect_to matches_path
-  end
-
-  private
   def pairing_date
     year = params[:match]["pairing_date(1i)"].to_i
     month = params[:match]["pairing_date(2i)"].to_i
