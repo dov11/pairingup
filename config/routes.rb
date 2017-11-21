@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :profiles, only: [:new, :edit, :create, :update]
+  resources :profiles, only: [:new, :edit, :create, :update, :index]
   resources :matches
   root to: 'pages#home'
 

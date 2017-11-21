@@ -10,6 +10,7 @@ student4 = User.create!(email: "mary@gmail.com", password: "123456")
 student5 = User.create!(email: "ann@gmail.com", password: "123456")
 student6 = User.create!(email: "bob@gmail.com", password: "123456")
 
+adminProfile = Profile.create(first_name: "Admin", last_name: "The Admin", user: admin)
 profile1 = Profile.create(first_name: "1", last_name: "A", user: student1)
 profile2 = Profile.create(first_name: "2", last_name: "B", user: student2)
 profile3 = Profile.create(first_name: "3", last_name: "C", user: student3)
