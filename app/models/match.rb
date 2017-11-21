@@ -84,7 +84,7 @@ class Match < ApplicationRecord
   end
 
   def self.show_my_matches(user)
-    Match.sort_by_created_asc.all.map do |match|
+    Match.exclude_future_pairings.map do |match|
       match.select_my_pairings(user)
     end
   end
@@ -92,6 +92,12 @@ class Match < ApplicationRecord
   def select_my_pairings(user)
     self.pairing = pairing.select{|student, its_match| student == user.profile.full_name || its_match == user.profile.full_name}
     return self
+  end
+
+  def self.exclude_future_pairings
+    Match.sort_by_created_asc.all.select do |match|
+      match.pairing_date<=DateTime.new(Time.now.year, Time.now.month, Time.now.day)
+    end
   end
 
   def self.sort_by_created_asc
