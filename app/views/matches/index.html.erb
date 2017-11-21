@@ -2,7 +2,7 @@
 <%@matches.each do |match|%>
   <p><%= link_to match.nice_date, match%></p>
   <%match.pairing.each do |key, value|%>
-    <p><%= key%> ---- <%=value%>
+    <p><%= key%> ---- <%=value%></p>
   <%end%>
 <%end%>
 

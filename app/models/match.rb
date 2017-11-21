@@ -83,6 +83,17 @@ class Match < ApplicationRecord
     return duplicate
   end
 
+  def self.show_my_matches(user)
+    Match.sort_by_created_asc.all.map do |match|
+      match.select_my_pairings(user)
+    end
+  end
+
+  def select_my_pairings(user)
+    self.pairing = pairing.select{|student, its_match| student == user.profile.full_name || its_match == user.profile.full_name}
+    return self
+  end
+
   def self.sort_by_created_asc
     self.order('pairing_date asc')
   end

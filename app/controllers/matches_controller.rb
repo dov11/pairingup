@@ -1,6 +1,10 @@
 class MatchesController < ApplicationController
   def index
-    @matches = Match.sort_by_created_asc.all
+    if current_user.try(:admin?)
+      @matches = Match.sort_by_created_asc.all
+    else
+      @matches = Match.all.show_my_matches(current_user)
+    end
   end
 
   def show
