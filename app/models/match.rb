@@ -1,12 +1,12 @@
 class Match < ApplicationRecord
 
-  def self.create_match
+  def self.create_match(date)
 
     # # if Match.last.created_at.sec == Time.now.sec
     # #   Match.last.destroy
     # #   Match.create(pairing: hash)
     # # else
-      Match.create(pairing: unique_pairings)
+      Match.create(pairing: unique_pairings, pairing_date: date)
     # end
   end
 
@@ -56,6 +56,6 @@ class Match < ApplicationRecord
   end
 
   def self.sort_by_created_asc
-    self.order('created_at asc')
+    self.order('pairing_date asc')
   end
 end

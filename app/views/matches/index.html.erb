@@ -1,9 +1,20 @@
 <h1> Matches:</h1>
 <%@matches.each do |match|%>
-  <p><%= link_to match.created_at, match%></p>
+  <p><%= link_to match.pairing_date, match%></p>
   <%match.pairing.each do |key, value|%>
     <p><%= key%> ---- <%=value%>
   <%end%>
 <%end%>
 
 <%= link_to "Create match", matches_path, method: :create%>
+<div class="panel-body">
+<%= form_for @match, url: matches_path, method: :create do |f|%>
+  <div class="form-group">
+    <label>Select date</label>
+    <%= f.date_select :pairing_date, discard_year: true, default: {year: Time.new.year}%>
+  </div>
+  <div class="actions">
+    <%= f.submit "Create matches", class: "btn btn-primary" %>
+  </div>
+<%end%>
+</div>
