@@ -1,7 +1,6 @@
 class MatchesController < ApplicationController
   def index
     @matches = Match.sort_by_created_asc.all
-    @match  = Match.create_match(Time.new)
   end
 
   def show
@@ -9,7 +8,6 @@ class MatchesController < ApplicationController
   end
 
   def create
-    byebug
     @match = Match.create_match(pairing_date)
     redirect_to matches_path
   end

@@ -17,4 +17,4 @@ profile4 = Profile.create(first_name: "4", last_name: "_", user: student4)
 # profile5 = Profile.create(first_name: "ann", last_name: "S", user: student5)
 # profile6 = Profile.create(first_name: "bob", last_name: "B", user: student6)
 
-match1 = Match.create(pairing: { "2" => "4", "3" => "5"})
+# match1 = Match.create(pairing: { "2" => "4", "3" => "5"})

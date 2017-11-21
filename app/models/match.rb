@@ -2,12 +2,21 @@ class Match < ApplicationRecord
 
   def self.create_match(date)
 
-    # # if Match.last.created_at.sec == Time.now.sec
-    # #   Match.last.destroy
-    # #   Match.create(pairing: hash)
-    # # else
+    if same_day?(date)
+      # x = Match.find_by(pairing_date: date)
+      # byebug
+      Match.find_by(pairing_date: date).destroy
       Match.create(pairing: unique_pairings, pairing_date: date)
-    # end
+    else
+      Match.create(pairing: unique_pairings, pairing_date: date)
+    end
+  end
+
+  def self.same_day?(date)
+    return false unless Match.find_by(pairing_date: date)
+    Match.find_by(pairing_date: date).pairing_date.day == date.day &&
+    Match.find_by(pairing_date: date).pairing_date.month == date.month &&
+    Match.find_by(pairing_date: date).pairing_date.year == date.year
   end
 
   def self.unique_pairings
@@ -57,5 +66,9 @@ class Match < ApplicationRecord
 
   def self.sort_by_created_asc
     self.order('pairing_date asc')
+  end
+
+  def nice_date
+    "#{pairing_date.year}-#{pairing_date.month}-#{pairing_date.day}"
   end
 end
