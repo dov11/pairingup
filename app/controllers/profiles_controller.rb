@@ -1,17 +1,31 @@
 class ProfilesController < ApplicationController
-  before_action :set_profile, only: [:edit, :update]
+  before_action :set_profile, only: [:index, :edit, :update]
+
+  def index
+    if current_user.try(:admin?)
+      @profiles = profiles_data
+    else
+      redirect_to root_path, notice: "You do not have access"
+    end
+  end
 
   def new
     @profile = Profile.new
   end
 
   def create
-    @profile = current_user.build_profile(profile_params)
-
-    if @profile.save
-      redirect_to edit_profile_path(@profile), notice: "Profile successfully created"
+    if current_user.try(:admin?) && profile_params[:user]
+      @user = User.find(profile_params[:user])
+      @user.admin = @user.admin ? false : true
+      @user.save
+      redirect_to profiles_path
     else
-      render :new
+      @profile = current_user.build_profile(profile_params)
+      if @profile.save
+        redirect_to edit_profile_path(@profile), notice: "Profile successfully created"
+      else
+        render :new
+      end
     end
   end
 
@@ -27,11 +41,27 @@ class ProfilesController < ApplicationController
   end
 
   private
-    def set_profile
-      @profile = current_user.profile
-    end
+  def set_profile
+    @profile = current_user.profile
+  end
 
-    def profile_params
+  def profile_params
+    if current_user.try(:admin?)
+      params
+    else
       params.require(:profile).permit(:first_name, :last_name, :bio)
     end
+  end
+
+
+  def profiles_data
+    Profile.all.map do |profile|
+      {
+        id: profile.id,
+        full_name: profile.full_name,
+        user: profile.user,
+        admin: profile.user.admin
+      }
+    end
+  end
 end

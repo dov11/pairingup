@@ -1,0 +1,16 @@
+<h1>User Profiles</h1>
+<%if current_user.try(:admin?)%>
+  <% @profiles.each do |profile|%>
+    <div><%=profile[:full_name]%>
+        <%= form_tag(url: profile_path(profile[:id]), method: :create, user: profile[:user]) do%>
+        <div class="actions">
+          <%if profile[:admin]%>
+          <%= submit_tag("Admin", class: "btn btn-primary") %>
+          <%else%>
+          <%= submit_tag("Student", class: "btn btn-danger") %>
+          <%end%>
+        </div>
+      <%end%>
+  </div>
+  <%end%>
+<%end%>
