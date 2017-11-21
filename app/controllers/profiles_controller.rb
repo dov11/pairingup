@@ -3,7 +3,7 @@ class ProfilesController < ApplicationController
 
   def index
     if current_user.try(:admin?)
-      @profiles = Profile.all
+      @profiles = profiles_data
     else
       redirect_to root_path, notice: "You do not have access"
     end
@@ -53,7 +53,15 @@ class ProfilesController < ApplicationController
     end
   end
 
-  # def profile_full_names
-  #   Profile.all.map{|profile| profile.full_name}
-  # end
+
+  def profiles_data
+    Profile.all.map do |profile|
+      {
+        id: profile.id,
+        full_name: profile.full_name,
+        user: profile.user,
+        admin: profile.user.admin
+      }
+    end
+  end
 end
