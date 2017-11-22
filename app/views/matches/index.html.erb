@@ -10,7 +10,6 @@
   <%end%>
 <%end%>
 <% if current_user.try(:admin?)%>
-  <%= link_to "Create match", matches_path, method: :create%>
   <div class="panel-body">
   <%= form_tag(url: matches_path, method: :create) do%>
     <div class="form-group">
