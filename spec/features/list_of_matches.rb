@@ -15,7 +15,7 @@ def create_five_matches
   set_date_and_create_match((Time.now+5.day).day)
 end
 
-def expect_five_different_mathes
+def expect_five_different_matches
   expect(page).to have_content("1 A ---- 2 B").or(have_content("2 B ---- 1 A"))
   expect(page).to have_content("1 A ---- 3 C").or(have_content("3 C ---- 1 A"))
   expect(page).to have_content("1 A ---- 4 D").or(have_content("4 D ---- 1 A"))
@@ -50,7 +50,7 @@ describe "Current user viewing the list of matches" do
 
     create_five_matches
 
-    expect_five_different_mathes
+    expect_five_different_matches
   end
 
   it "regenerates random matches" do
@@ -60,7 +60,7 @@ describe "Current user viewing the list of matches" do
 
     set_date_and_create_match(Time.now.day)
 
-    expect_five_different_mathes
+    expect_five_different_matches
   end
 
   it "student sees only past matches" do
