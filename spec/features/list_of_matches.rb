@@ -23,6 +23,11 @@ def expect_five_different_mathes
   expect(page).to have_content("1 A ---- 6 F").or(have_content("6 F ---- 1 A"))
 end
 
+def expect_only_two_matches
+  expect(page).to have_content("#{Time.now.year}-#{Time.now.month}-#{Time.now.day}")
+  expect(page).to have_content("#{Time.now.year}-#{Time.now.month}-#{(Time.now-1.day).day}")
+end
+
 describe "Current user viewing the list of matches" do
   before { login_as admin }
   let!(:admin) {create :user, email: "admin_@gmail.com", admin: true}
@@ -39,13 +44,13 @@ describe "Current user viewing the list of matches" do
   let!(:profile4) {create :profile, first_name: "4", last_name: "D", user: user4}
   let!(:profile5) {create :profile, first_name: "5", last_name: "E", user: user5}
   let!(:profile6) {create :profile, first_name: "6", last_name: "F", user: user6}
+
   it "shows random admin matches" do
     visit matches_url
 
     create_five_matches
 
     expect_five_different_mathes
-
   end
 
   it "regenerates random matches" do
@@ -53,12 +58,21 @@ describe "Current user viewing the list of matches" do
 
     create_five_matches
 
-    expect_five_different_mathes
-
     set_date_and_create_match(Time.now.day)
 
     expect_five_different_mathes
+  end
 
+  it "student sees only past matches" do
+    visit matches_url
+
+    create_five_matches
+
+    logout
+
+    login_as user1
+
+    expect_only_two_matches
   end
 
 
