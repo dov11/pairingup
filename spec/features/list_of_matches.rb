@@ -1,11 +1,20 @@
 require 'rails_helper'
 
-def set_date_and_create_match(year, month, day)
-  select "#{year}", from: "match_pairing_date_1i"
-  select month, from: "match_pairing_date_2i"
+def set_date_and_create_match(day)
+  select "#{Time.now.year}", from: "match_pairing_date_1i"
+  select I18n.t("date.month_names")[Date.today.month], from: "match_pairing_date_2i"
   select "#{day}", from: "match_pairing_date_3i"
   click_on("Create matches")
 end
+
+def create_five_matches
+  set_date_and_create_match((Time.now-1.day).day)
+  set_date_and_create_match(Time.now.day)
+  set_date_and_create_match((Time.now+2.day).day)
+  set_date_and_create_match((Time.now+4.day).day)
+  set_date_and_create_match((Time.now+5.day).day)
+end
+
 describe "Current user viewing the list of matches" do
   before { login_as admin }
   let!(:admin) {create :user, email: "admin_@gmail.com", admin: true}
@@ -25,11 +34,7 @@ describe "Current user viewing the list of matches" do
   it "shows random admin matches" do
     visit matches_url
 
-    set_date_and_create_match(2017, "November", 22)
-    set_date_and_create_match(2017, "November", 23)
-    set_date_and_create_match(2017, "November", 26)
-    set_date_and_create_match(2017, "November", 28)
-    set_date_and_create_match(2017, "November", 29)
+    create_five_matches
 
     expect(page).to have_content("1 A ---- 2 B").or(have_content("2 B ---- 1 A"))
     expect(page).to have_content("1 A ---- 3 C").or(have_content("3 C ---- 1 A"))
