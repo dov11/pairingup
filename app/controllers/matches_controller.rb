@@ -38,7 +38,7 @@ class MatchesController < ApplicationController
   end
 
   def partner_of_the_day
-    Match.show_match_of_the_day.users_partner(current_user)
+    Match.show_match_of_the_day.users_partner(user_full_name)
   end
 
   def pairing_date
