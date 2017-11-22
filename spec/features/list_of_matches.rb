@@ -15,6 +15,14 @@ def create_five_matches
   set_date_and_create_match((Time.now+5.day).day)
 end
 
+def expect_five_different_mathes
+  expect(page).to have_content("1 A ---- 2 B").or(have_content("2 B ---- 1 A"))
+  expect(page).to have_content("1 A ---- 3 C").or(have_content("3 C ---- 1 A"))
+  expect(page).to have_content("1 A ---- 4 D").or(have_content("4 D ---- 1 A"))
+  expect(page).to have_content("1 A ---- 5 E").or(have_content("5 E ---- 1 A"))
+  expect(page).to have_content("1 A ---- 6 F").or(have_content("6 F ---- 1 A"))
+end
+
 describe "Current user viewing the list of matches" do
   before { login_as admin }
   let!(:admin) {create :user, email: "admin_@gmail.com", admin: true}
@@ -36,11 +44,7 @@ describe "Current user viewing the list of matches" do
 
     create_five_matches
 
-    expect(page).to have_content("1 A ---- 2 B").or(have_content("2 B ---- 1 A"))
-    expect(page).to have_content("1 A ---- 3 C").or(have_content("3 C ---- 1 A"))
-    expect(page).to have_content("1 A ---- 4 D").or(have_content("4 D ---- 1 A"))
-    expect(page).to have_content("1 A ---- 5 E").or(have_content("5 E ---- 1 A"))
-    expect(page).to have_content("1 A ---- 6 F").or(have_content("6 F ---- 1 A"))
+    expect_five_different_mathes
 
   end
 
