@@ -4,14 +4,15 @@ class Match < ApplicationRecord
     @@pairings
   end
   def self.create_match(date)
-@@pairings ||= create_array_of_pairings(students_names)
-    # if same_day?(date)
-      # overwrite_this_and_later_matchings(date)
-    # else
+    @@pairings ||= create_array_of_pairings(students_names)
+    if same_day?(date)
+      match = Match.find_by(pairing_date: date)
+      overwrite_this_and_later_matchings(match)
+    else
       # Match.create(pairing: unique_pairings(date), pairing_date: date)
       add_pairings(students_names) if pairings_run_out?
       create_consequent_match(date)
-      # end
+    end
 
   end
 
@@ -22,32 +23,45 @@ class Match < ApplicationRecord
     match.save
   end
 
-  def self.overwrite_this_and_later_matchings(date)
-    indexes_of_this_and_later_matchings(date).each do |index|
-      Match.sort_by_created_asc.all[index][:pairing] = pairings_to_shuffle[index]
-  end
-
-  def self.pairings_of_this_and_later_matchings(date)
-    pairings_to_shuffle=[]
-    indexes_of_this_and_later_matchings(date).each do |index|
-      pairings_to_shuffle<<@@pairings[index]
+  def self.overwrite_this_and_later_matchings(match)
+    shuffled_pairings=pairings_to_shuffle(match)
+    pairings_to_shuffle_index=0
+    matches_to_overwrite(match).each do |match|
+      if match
+        match[:pairing] = shuffled_pairings[pairings_to_shuffle_index]
+        match.save
+      end
+      @@pairings[match_index(match)] = shuffled_pairings[pairings_to_shuffle_index]
+      pairings_to_shuffle_index+=1
     end
-    pairings_to_shuffle.shuffle
   end
 
-  def self.indexes_of_this_and_later_matchings(date)
-    index = match_index(date)
+  def self.matches_to_overwrite(match)
+    indexes_of_this_and_later_matchings(match).map do |index|
+      Match.sort_by_created_asc.all[index]
+    end
+  end
+
+  def self.pairings_to_shuffle(match)(match)
+    pairings_to_shuffle_array=[]
+    indexes_of_this_and_later_matchings(match).each do |index|
+      pairings_to_shuffle_array<<@@pairings[index]
+    end
+    pairings_to_shuffle_array.shuffle
+  end
+
+  def self.indexes_of_this_and_later_matchings(match)
+    index = match_index(match)
     indexes=[]
-    number_of_pairings_to_shuffle(date).times do
+    number_of_pairings_to_shuffle(match).times do
       indexes << index
       index+=1
     end
     indexes
   end
 
-  def self.number_of_pairings_to_shuffle(date)
-    index = match_index(date)
-    index_in_the_round_robin = index % number_of_unique_matches
+  def self.number_of_pairings_to_shuffle(match)
+    index_in_the_round_robin = match_index(match) % number_of_unique_matches
     number_of_pairings_to_shuffle = 5 - index_in_the_round_robin
   end
 
