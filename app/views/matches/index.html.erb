@@ -12,12 +12,12 @@
 <% if current_user.try(:admin?)%>
   <div class="panel-body">
   <%= form_tag(url: matches_path, method: :create) do%>
-    <div class="form-group">
+    <div class="form-group" id="form">
       <label>Select date</label>
       <%= date_select(:match, :pairing_date)%>
     </div>
     <div class="actions">
-      <%= submit_tag("Create matches", class: "btn btn-primary") %>
+      <%= submit_tag("Create matches", class: "btn btn-primary", id: "create") %>
     </div>
   <%end%>
   </div>
