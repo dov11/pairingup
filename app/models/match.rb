@@ -10,12 +10,20 @@ class Match < ApplicationRecord
     # else
       # Match.create(pairing: unique_pairings(date), pairing_date: date)
       add_pairings(students_names) if pairings_run_out?
+      create_consequent_match(date)
+      # end
 
-      match = Match.create(pairing_date: date)
-      pairing = select_pairing(date)
-      match[:pairing] = pairing
-      match.save
-    # end
+  end
+
+  def self.create_consequent_match(date)
+    match = Match.create(pairing_date: date)
+    pairing = select_pairing(date)
+    match[:pairing] = pairing
+    match.save
+  end
+
+  def self.overwrite_this_and_later_matchings(date)
+
   end
 
   def self.pairings_run_out?

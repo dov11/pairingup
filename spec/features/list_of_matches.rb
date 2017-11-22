@@ -1,26 +1,25 @@
 require 'rails_helper'
 
 def set_date_and_create_match(day)
-  # year = Time.now.year
-  # month = I18n.t("date.month_names")[Date.today.month]
-  # select "#{year}", from: "match_pairing_date_1i"
+  year = Time.now.year
+  month = I18n.t("date.month_names")[Date.today.month]
+  select "#{year}", from: "match_pairing_date_1i"
   select "2017", from: "match_pairing_date_1i"
-  # select month, from: "match_pairing_date_2i"
+  select month, from: "match_pairing_date_2i"
   select "November", from: "match_pairing_date_2i"
-  # select "#{day}", from: "match_pairing_date_3i"
   select "#{day}", from: "match_pairing_date_3i"
   click_on("Create matches")
 end
 
 def set_day(day)
-  # days = [
-  #   (Time.now-1.day).day,
-  #   Time.now.day,
-  #   (Time.now+2.day).day,
-  #   (Time.now+4.day).day,
-  #   (Time.now+5.day).day
-  # ]
-  days = [22, 23, 27, 29, 30]
+  days = [
+    (Time.now-1.day).day,
+    Time.now.day,
+    (Time.now+2.day).day,
+    (Time.now+4.day).day,
+    (Time.now+5.day).day
+  ]
+  # days = [22, 23, 27, 29, 30]
   days[day]
 end
 
@@ -36,12 +35,12 @@ def expect_five_different_matches
   expect(page).to have_content("1 A ---- 6 F").or(have_content("6 F ---- 1 A"))
 end
 
-# def expect_only_two_matches
-#   match_of_today = "#{Time.now.year}-#{Time.now.month}-#{Time.now.day}"
-#   match_of_yesterday = "#{Time.now.year}-#{Time.now.month}-#{(Time.now-1.day).day}"
-#   expect(page).to have_content(match_of_today)
-#   expect(page).to have_content(match_of_yesterday)
-# end
+def expect_only_two_matches
+  match_of_today = "#{Time.now.year}-#{Time.now.month}-#{Time.now.day}"
+  match_of_yesterday = "#{Time.now.year}-#{Time.now.month}-#{(Time.now-1.day).day}"
+  expect(page).to have_content(match_of_today)
+  expect(page).to have_content(match_of_yesterday)
+end
 
 describe "Current user viewing the list of matches" do
   before { login_as admin }
@@ -73,25 +72,25 @@ describe "Current user viewing the list of matches" do
 
     create_five_matches
 
-    # today_day = Time.now.day
+    today_day = Time.now.day
 
-    # set_date_and_create_match(today_day)
-    set_date_and_create_match(2)
+    set_date_and_create_match(today_day)
+    # set_date_and_create_match(2)
 
     expect_five_different_matches
   end
 
-  # it "student sees only past matches" do
-  #   visit matches_url
-  #
-  #   create_five_matches
-  #
-  #   logout
-  #
-  #   login_as user1
-  #
-  #   expect_only_two_matches
-  # end
+  it "student sees only past matches" do
+    visit matches_url
+
+    create_five_matches
+
+    logout
+
+    login_as user1
+
+    expect_only_two_matches
+  end
 
 
 end
