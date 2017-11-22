@@ -23,7 +23,32 @@ class Match < ApplicationRecord
   end
 
   def self.overwrite_this_and_later_matchings(date)
+    indexes_of_this_and_later_matchings(date).each do |index|
+      Match.sort_by_created_asc.all[index][:pairing] = pairings_to_shuffle[index]
+  end
 
+  def self.pairings_of_this_and_later_matchings(date)
+    pairings_to_shuffle=[]
+    indexes_of_this_and_later_matchings(date).each do |index|
+      pairings_to_shuffle<<@@pairings[index]
+    end
+    pairings_to_shuffle.shuffle
+  end
+
+  def self.indexes_of_this_and_later_matchings(date)
+    index = match_index(date)
+    indexes=[]
+    number_of_pairings_to_shuffle(date).times do
+      indexes << index
+      index+=1
+    end
+    indexes
+  end
+
+  def self.number_of_pairings_to_shuffle(date)
+    index = match_index(date)
+    index_in_the_round_robin = index % number_of_unique_matches
+    number_of_pairings_to_shuffle = 5 - index_in_the_round_robin
   end
 
   def self.pairings_run_out?
@@ -52,7 +77,7 @@ class Match < ApplicationRecord
 
   def self.create_array_of_pairings(students)
     array_of_pairings = []
-    number_of_unique_matches = number_of_students-1
+    # number_of_unique_matches = number_of_students-1
 
     fixed_element = students[0]
     shuffled_array = students.last(number_of_students-1)
@@ -80,7 +105,11 @@ class Match < ApplicationRecord
 
 
   def self.number_of_robin_rounds
-    ((Match.all.length).to_f / (number_of_students-1)).ceil
+    ((Match.all.length).to_f / (number_of_unique_matches)).ceil
+  end
+
+  def self.number_of_unique_matches
+    number_of_students - 1
   end
 
   def self.do_robin_round(fixed_element, shuffled_array)
