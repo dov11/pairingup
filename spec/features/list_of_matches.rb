@@ -48,5 +48,18 @@ describe "Current user viewing the list of matches" do
 
   end
 
+  it "regenerates random matches" do
+    visit matches_url
+
+    create_five_matches
+
+    expect_five_different_mathes
+
+    set_date_and_create_match(Time.now.day)
+
+    expect_five_different_mathes
+
+  end
+
 
 end
