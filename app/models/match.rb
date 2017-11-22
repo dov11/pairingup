@@ -100,6 +100,13 @@ class Match < ApplicationRecord
     end
   end
 
+  def self.show_match_of_the_day
+      matches = Match.select do |match|
+        match.pairing_date==DateTime.new(Time.now.year, Time.now.month, Time.now.day)
+      end
+      matches[0]
+  end
+
   def users_partner(full_name)
     self.pairing[full_name] ? self.pairing[full_name] : self.pairing.keys[0]
   end

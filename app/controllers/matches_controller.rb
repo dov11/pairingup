@@ -1,6 +1,7 @@
 class MatchesController < ApplicationController
   def index
     @matches = get_matches
+    @partner = partner_of_the_day unless current_user.try(:admin?)
   end
 
   def show
@@ -34,6 +35,10 @@ class MatchesController < ApplicationController
     else
       @matches = Match.all.show_my_matches(current_user)
     end
+  end
+
+  def partner_of_the_day
+    Match.show_match_of_the_day.users_partner(current_user)
   end
 
   def pairing_date

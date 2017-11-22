@@ -1,3 +1,7 @@
+<%unless current_user.try(:admin?)%>
+<div class="panel">Your partner for today: <%=@partner%></div>
+<%end%>
+
 <h1> Matches:</h1>
 <%@matches.each do |match|%>
   <p><%= link_to match.nice_date, match%></p>
