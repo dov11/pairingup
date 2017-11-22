@@ -4,7 +4,7 @@ class MatchesController < ApplicationController
   end
 
   def show
-    @match=get_match
+    @match= current_user.try(:admin?) ? get_match : get_match.users_partner(user_full_name)
   end
 
   def create
@@ -17,6 +17,9 @@ class MatchesController < ApplicationController
   end
 
   private
+  def user_full_name
+    current_user.profile.full_name
+  end
   def get_match
     if current_user.try(:admin?)
       @match=Match.find(params[:id])

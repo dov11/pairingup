@@ -100,6 +100,10 @@ class Match < ApplicationRecord
     end
   end
 
+  def users_partner(full_name)
+    self.pairing[full_name] ? self.pairing[full_name] : self.pairing.keys[0]
+  end
+
   def self.sort_by_created_asc
     self.order('pairing_date asc')
   end
