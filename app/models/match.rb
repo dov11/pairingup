@@ -11,7 +11,6 @@ class Match < ApplicationRecord
       match = Match.find_by(pairing_date: date)
       overwrite_this_and_later_matchings(match)
     elsif match_to_be_created_is_earlier_than_others?(date)
-      byebug
       add_pairings(students_names) if pairings_run_out?
       match = Match.create(pairing_date: date)
       overwrite_this_and_later_matchings(match)
@@ -92,7 +91,7 @@ class Match < ApplicationRecord
 
   def self.number_of_pairings_to_shuffle(match)
     index_in_the_round_robin = match_index(match) % number_of_unique_matches
-    number_of_pairings_to_shuffle = 5 - index_in_the_round_robin
+    number_of_pairings_to_shuffle = number_of_unique_matches - index_in_the_round_robin
   end
 # ---end of overwriting -block
 # block of round robin methods
