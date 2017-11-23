@@ -13,11 +13,16 @@ describe "Current user viewing the list of users" do
     visit root_url
     click_link('Users')
 
-    expect(page).to have_content('Admin User')
+    expect(page).to have_content('Admin')
     expect(page).to have_content('Student')
+    byebug
 
-    all('input').each {|input| click_on(input)}
+    # all('button').each {|button| click_on(button)}
     # click_on('Student')
+    page.all('Student').each{|student| click_on(student)}
+    visit root_url
+    click_link('Users')
+    byebug
 
     expect(page).to have_content('Admin')
     expect(page).to have_no_content('Student')

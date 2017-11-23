@@ -5,9 +5,13 @@
         <%= form_tag(url: profile_path(profile[:id]), method: :create, user: profile[:user]) do%>
         <div class="actions">
           <%if profile[:admin]%>
-          <%= submit_tag("Admin User", class: "btn btn-primary") %>
+          <p>
+            <%= button_tag("Admin User", class: "btn btn-primary") %>
+          </p>
           <%else%>
-          <%= submit_tag("Student", class: "btn btn-danger") %>
+          <p>
+            <%= button_tag("Student", class: "btn btn-danger") %>
+          </p>
           <%end%>
         </div>
       <%end%>
