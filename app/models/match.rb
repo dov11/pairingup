@@ -1,4 +1,5 @@
 class Match < ApplicationRecord
+  attr_accessor :pairings
   @@pairings
   def self.pairings
     @@pairings

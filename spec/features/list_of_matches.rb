@@ -15,7 +15,6 @@ def set_day(day)
     (Time.now+4.day).day,
     (Time.now+5.day).day
   ]
-  # days = [22, 23, 27, 29, 30]
   days[day]
 end
 
