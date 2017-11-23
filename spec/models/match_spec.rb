@@ -67,12 +67,17 @@ RSpec.describe Match, type: :model do
 
       expect(pairings_before).not_to eq pairings_after
     end
-    # it "creates 2 matches, overwrightes them adds 3 more" do
-    #   Match.create_match(DateTime.new(2017,11,22))
-    #   Match.create_match(DateTime.new(2017,11,24))
-    #   Match.create_match(DateTime.new(2017,11,22))
-    #   Match.create_match(DateTime.new(2017,11,22))
-    #
-    # end
+    it "creates 2 matches, overwrightes them adds 3 more" do
+      create_a_match(22)
+      create_a_match(24)
+      pairings_before = pairings_as_array_of_arrays
+      create_a_match(22)
+      pairings_after = pairings_as_array_of_arrays
+      3.times {|day| create_a_match(25+day)}
+
+      expect(pairings_as_array_of_arrays.flatten.sort)
+      .to eq possible_combinations_flat
+      expect(pairings_before).not_to eq pairings_after
+    end
   end
 end
