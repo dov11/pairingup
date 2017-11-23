@@ -36,7 +36,7 @@ class MatchesController < ApplicationController
 
   def get_matches
     if current_user.try(:admin?)
-      @matches = Match.sort_by_created_asc.all
+      @matches = Match.sort_by_pairing_date.all
     else
       @matches = Match.all.show_my_matches(current_user)
     end

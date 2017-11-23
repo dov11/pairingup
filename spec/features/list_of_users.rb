@@ -25,7 +25,6 @@ describe "Current user viewing the list of users" do
     click_on('Student')
     # page.all('Student').each{|student| click_on(student)}
     visit root_url
-    byebug
     click_link('Users')
 
     expect(page).to have_content('Admin')

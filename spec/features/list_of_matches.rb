@@ -120,7 +120,6 @@ describe "Current user viewing the list of matches" do
   #   visit matches_url
   #   create_four_matches
   #   set_date_and_create_match(set_day(1))
-  #   set_date_and_create_match(set_day(1))
   #   set_date_and_create_match(set_day(4))
   #   expect_five_different_matches
   #
