@@ -39,6 +39,9 @@ RSpec.describe Match, type: :model do
     def pairings_as_array_of_arrays
       Match.all.map{|match| match[:pairing].to_a}
     end
+    def first_5_pairings_as_array_of_arrays
+      Match.first(5).map{|match| match[:pairing].to_a}
+    end
     it "returnes all possible combinations" do
       expect(Match.create_array_of_pairings(Match.students_names)
       .map{|hash| hash.to_a}
@@ -78,6 +81,19 @@ RSpec.describe Match, type: :model do
       expect(pairings_as_array_of_arrays.flatten.sort)
       .to eq possible_combinations_flat
       expect(pairings_before).not_to eq pairings_after
+    end
+    it "creates 7 matches, overwrites only first 5" do
+      5.times {|day| create_a_match(22+day)}
+      pairings_before = pairings_as_array_of_arrays
+      2.times {|day| create_a_match(27+day)}
+      last_2_pairings_before = Match.last(2).map{|match| match[:pairing].to_a}
+      create_a_match(22)
+      pairings_after = first_5_pairings_as_array_of_arrays
+      last_2_pairings_after = Match.last(2).map{|match| match[:pairing].to_a}
+
+      expect(pairings_before).not_to eq pairings_after
+      expect(last_2_pairings_before).to eq last_2_pairings_after
+
     end
   end
 end
