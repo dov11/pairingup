@@ -1,12 +1,8 @@
 require 'rails_helper'
 
 def set_date_and_create_match(day)
-  year = Time.now.year
-  month = I18n.t("date.month_names")[Date.today.month]
-  select "#{year}", from: "match_pairing_date_1i"
-  select "2017", from: "match_pairing_date_1i"
-  select month, from: "match_pairing_date_2i"
-  select "November", from: "match_pairing_date_2i"
+  select "#{Time.now.year}", from: "match_pairing_date_1i"
+  select I18n.t("date.month_names")[Date.today.month], from: "match_pairing_date_2i"
   select "#{day}", from: "match_pairing_date_3i"
   click_on("Create matches")
 end
@@ -38,14 +34,22 @@ end
 def expect_only_two_matches
   match_of_today = "#{Time.now.year}-#{Time.now.month}-#{Time.now.day}"
   match_of_yesterday = "#{Time.now.year}-#{Time.now.month}-#{(Time.now-1.day).day}"
+  match_of_tomorrow = "#{Time.now.year}-#{Time.now.month}-#{(Time.now+2.day).day}"
   expect(page).to have_content(match_of_today)
   expect(page).to have_content(match_of_yesterday)
+  expect(page).to have_no_content(match_of_tomorrow)
+end
+
+def login(email, password)
+  fill_in "Email", with: email
+  fill_in "Password", with: password
+  click_button "Log in"
 end
 
 describe "Current user viewing the list of matches" do
   before { login_as admin }
   let!(:admin) {create :user, email: "admin_@gmail.com", admin: true}
-  let!(:user1) {create :user, email: "user1@gmail.com", admin: false}
+  let!(:user1) {create :user, email: "user1@gmail.com", password: "123456", admin: false}
   let!(:user2) {create :user, email: "user2@gmail.com", admin: false}
   let!(:user3) {create :user, email: "user3@gmail.com", admin: false}
   let!(:user4) {create :user, email: "user4@gmail.com", admin: false}
@@ -75,7 +79,6 @@ describe "Current user viewing the list of matches" do
     today_day = Time.now.day
 
     set_date_and_create_match(today_day)
-    # set_date_and_create_match(2)
 
     expect_five_different_matches
   end
@@ -85,11 +88,13 @@ describe "Current user viewing the list of matches" do
 
     create_five_matches
 
-    logout
+    click_on("Log out")
 
-    login_as user1
+    login("user1@gmail.com", "123456")
+    sleep(1)
 
     expect_only_two_matches
+    expect(page).to have_content("Your partner for today:")
   end
 
 
