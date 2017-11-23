@@ -13,10 +13,10 @@ describe "Current user viewing the list of users" do
     visit root_url
     click_link('Users')
 
-    # expect(page).to have_content('Admin User')
-    # expect(page).to have_content('Student')
+    expect(page).to have_content('Admin User')
+    expect(page).to have_content('Student')
 
-    all('input').each {|input| click_on(in)}
+    all('input').each {|input| click_on(input)}
     # click_on('Student')
 
     expect(page).to have_content('Admin')
