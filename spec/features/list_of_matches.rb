@@ -46,6 +46,19 @@ def login(email, password)
   click_button "Log in"
 end
 
+def find_pairing(day)
+  click_on("#{Time.now.year}-#{Time.now.month}-#{day}")
+
+  pairing = all('p').each { |a| a[:html] }
+  pairing = pairing.map{|a| a.text}
+  visit matches_url
+  return pairing
+end
+
+# def find_two_pairings
+#   find_pairing(today_day)
+# end
+
 describe "Current user viewing the list of matches" do
   before { login_as admin }
   let!(:admin) {create :user, email: "admin_@gmail.com", admin: true}
@@ -76,11 +89,20 @@ describe "Current user viewing the list of matches" do
 
     create_five_matches
 
-    today_day = Time.now.day
+    today_day = set_day(1)
+    next_day = set_day(2)
+
+    two_pairings1 = find_pairing(today_day).concat(find_pairing(next_day))
 
     set_date_and_create_match(today_day)
 
     expect_five_different_matches
+
+    two_pairings2 = find_pairing(today_day).concat(find_pairing(next_day))
+
+    # pairing3 = pairing3.map{|a| a.text}
+
+    expect(two_pairings1).not_to eql(two_pairings2)
   end
 
   it "student sees only past matches" do
@@ -91,7 +113,6 @@ describe "Current user viewing the list of matches" do
     click_on("Log out")
 
     login("user1@gmail.com", "123456")
-    sleep(1)
 
     expect_only_two_matches
     expect(page).to have_content("Your partner for today:")

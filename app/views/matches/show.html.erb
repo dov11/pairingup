@@ -1,9 +1,11 @@
 <%if current_user.try(:admin?)%>
-<h1>Match:</h1>
-<%@match.pairing.each do |student, their_match|%>
-  <p><%= student%> - <%=their_match%></p>
-<%end%>
+  <h1>Match:</h1>
+  <div id="pairings">
+    <%@match.pairing.each do |student, their_match|%>
+      <p><%= student%> - <%=their_match%></p>
+  <%end%>
+  </div>
 <%else%>
-<h1>Your partner:</h1>
-<p><%=@match%>
+  <h1>Your partner:</h1>
+  <p><%=@match%>
 <%end%>
