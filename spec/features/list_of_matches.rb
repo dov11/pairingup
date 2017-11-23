@@ -15,7 +15,6 @@ def set_day(day)
     (Time.now+4.day).day,
     (Time.now+5.day).day
   ]
-  # days = [22, 23, 27, 29, 30]
   days[day]
 end
 
@@ -120,7 +119,6 @@ describe "Current user viewing the list of matches" do
   # it "generates 4 matches, regenerates them, adds one more" do
   #   visit matches_url
   #   create_four_matches
-  #   set_date_and_create_match(set_day(1))
   #   set_date_and_create_match(set_day(1))
   #   set_date_and_create_match(set_day(4))
   #   expect_five_different_matches

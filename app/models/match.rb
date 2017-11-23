@@ -1,4 +1,5 @@
 class Match < ApplicationRecord
+  attr_accessor :pairings
   @@pairings
   def self.pairings
     @@pairings
@@ -10,10 +11,9 @@ class Match < ApplicationRecord
       match = Match.find_by(pairing_date: date)
       overwrite_this_and_later_matchings(match)
     elsif match_to_be_created_is_earlier_than_others?(date)
-      byebug
       add_pairings(students_names) if pairings_run_out?
-      match = Match.create(pairing_date: date)
-      overwrite_this_and_later_matchings(match)
+      create_consequent_match(date)
+      overwrite_later_matches(date)
     else
       add_pairings(students_names) if pairings_run_out?
       create_consequent_match(date)
@@ -22,6 +22,20 @@ class Match < ApplicationRecord
 
   def self.match_to_be_created_is_earlier_than_others?(date)
     Match.all.select{|match| match[:pairing_date]>date}.length>0
+  end
+
+  def self.collect_later_matches(date)
+    Match.sort_by_pairing_date.all.select{|match| match[:pairing_date]>date}
+  end
+
+  def self.collect_later_dates(date)
+    collect_later_matches(date).map{|match| match[:pairing_date]}
+  end
+
+  def self.overwrite_later_matches(date)
+    later_dates = collect_later_dates(date)
+    collect_later_matches(date).each {|match| match.destroy}
+    later_dates.each{|date| create_consequent_match(date)}
   end
 
 # block of methods for adding new matches
@@ -46,7 +60,7 @@ class Match < ApplicationRecord
   end
 
   def self.match_index(match)
-    Match.sort_by_created_asc.all.index(match)
+    Match.sort_by_pairing_date.all.index(match)
   end
 #---end of creating block
 # block of methods for overwriting previously created matchings
@@ -62,7 +76,7 @@ class Match < ApplicationRecord
 
   def self.matches_to_overwrite(match)
     indexes_of_this_and_later_matchings(match).map do |index|
-      Match.sort_by_created_asc.all[index]
+      Match.sort_by_pairing_date.all[index]
     end
   end
 
@@ -91,7 +105,7 @@ class Match < ApplicationRecord
 
   def self.number_of_pairings_to_shuffle(match)
     index_in_the_round_robin = match_index(match) % number_of_unique_matches
-    number_of_pairings_to_shuffle = 5 - index_in_the_round_robin
+    number_of_pairings_to_shuffle = number_of_unique_matches - index_in_the_round_robin
   end
 # ---end of overwriting -block
 # block of round robin methods
@@ -168,7 +182,7 @@ class Match < ApplicationRecord
   end
 
   def self.exclude_future_pairings
-    Match.sort_by_created_asc.all.select do |match|
+    Match.sort_by_pairing_date.all.select do |match|
       match.pairing_date<=DateTime.new(Time.now.year, Time.now.month, Time.now.day)
     end
   end
@@ -184,7 +198,7 @@ class Match < ApplicationRecord
     self.pairing[full_name] ? self.pairing[full_name] : self.pairing.keys[0]
   end
   #----end of students -helper-block
-  def self.sort_by_created_asc
+  def self.sort_by_pairing_date
     self.order('pairing_date asc')
   end
 
