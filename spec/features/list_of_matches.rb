@@ -23,12 +23,15 @@ def create_five_matches
   5.times { |i| set_date_and_create_match(set_day(i))}
 end
 
+def create_four_matches
+  4.times { |i| set_date_and_create_match(set_day(i+1))}
+end
+
 def expect_five_different_matches
   expect(page).to have_content("1 A ---- 2 B").or(have_content("2 B ---- 1 A"))
-  expect(page).to have_content("1 A ---- 3 C").or(have_content("3 C ---- 1 A"))
-  expect(page).to have_content("1 A ---- 4 D").or(have_content("4 D ---- 1 A"))
-  expect(page).to have_content("1 A ---- 5 E").or(have_content("5 E ---- 1 A"))
-  expect(page).to have_content("1 A ---- 6 F").or(have_content("6 F ---- 1 A"))
+  expect(page).to have_content("2 B ---- 3 C").or(have_content("3 C ---- 2 B"))
+  expect(page).to have_content("2 B ---- 4 D").or(have_content("4 D ---- 2 B"))
+  expect(page).to have_content("2 B ---- 5 E").or(have_content("5 E ---- 2 B"))
 end
 
 def expect_only_two_matches
@@ -100,19 +103,42 @@ describe "Current user viewing the list of matches" do
 
     two_pairings2 = find_pairing(today_day).concat(find_pairing(next_day))
 
-    # pairing3 = pairing3.map{|a| a.text}
-
     expect(two_pairings1).not_to eql(two_pairings2)
   end
   it "generates random 5 matches after regenerating first" do
     visit matches_url
 
     set_date_and_create_match(set_day(0))
+    set_date_and_create_match(set_day(0))
 
-    create_five_matches
+    create_four_matches
     expect_five_different_matches
-
   end
+
+  # it "generates 4 matches, regenerates them, adds one more" do
+  #   visit matches_url
+  #   create_four_matches
+  #   set_date_and_create_match(set_day(1))
+  #   set_date_and_create_match(set_day(1))
+  #   set_date_and_create_match(set_day(4))
+  #   expect_five_different_matches
+  #
+  # end
+
+  # it "only mutates first 5 matches" do
+  #   visit matches_url
+  #
+  #   create_five_matches
+  #   set_date_and_create_match((Time.now+6.day).day)
+  #   pairing1_before = find_pairing((Time.now+6.day).day)
+  #   two_pairings_before = find_pairing(set_day(1)).concat(find_pairing(set_day(2)))
+  #   set_date_and_create_match(set_day(0))
+  #   pairing1_after = find_pairing((Time.now+6.day).day)
+  #   two_pairings_after = find_pairing(set_day(1)).concat(find_pairing(set_day(2)))
+  #
+  #   expect(pairing1_before).to eql(pairing1_after)
+  #   expect(two_pairings_before).not_to eql(two_pairings_after)
+  # end
 
   it "student sees only past matches" do
     visit matches_url

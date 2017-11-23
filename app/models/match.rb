@@ -9,11 +9,21 @@ class Match < ApplicationRecord
     if same_day?(date)
       match = Match.find_by(pairing_date: date)
       overwrite_this_and_later_matchings(match)
+    elsif match_to_be_created_is_earlier_than_others?(date)
+      byebug
+      add_pairings(students_names) if pairings_run_out?
+      match = Match.create(pairing_date: date)
+      overwrite_this_and_later_matchings(match)
     else
       add_pairings(students_names) if pairings_run_out?
       create_consequent_match(date)
     end
   end
+
+  def self.match_to_be_created_is_earlier_than_others?(date)
+    Match.all.select{|match| match[:pairing_date]>date}.length>0
+  end
+
 # block of methods for adding new matches
   def self.pairings_run_out?
     @@pairings.length==number_of_robin_rounds*Match.count
@@ -41,22 +51,13 @@ class Match < ApplicationRecord
 #---end of creating block
 # block of methods for overwriting previously created matchings
   def self.overwrite_this_and_later_matchings(match)
-    # shuffled_pairings=pairings_to_shuffle(match)
-    # pairings_to_shuffle_index=0
-    # matches_to_overwrite(match).each do |match|
-    #   if match
-    #     match[:pairing] = shuffled_pairings[pairings_to_shuffle_index]
-    #     match.save
-    #   end
-    #   pairings_to_shuffle_index+=1
-    # end
     pairings_to_shuffle(match)
     matches_to_overwrite(match).each do |match|
       if match
-          match[:pairing] = @@pairings[match_index(match)]
-          match.save
-        end
-end
+        match[:pairing] = @@pairings[match_index(match)]
+        match.save
+      end
+    end
   end
 
   def self.matches_to_overwrite(match)
@@ -96,8 +97,10 @@ end
 # block of round robin methods
   def self.create_array_of_pairings(students)
     array_of_pairings = []
-    fixed_element = students[0]
-    shuffled_array = students.last(number_of_students-1)
+    # fixed_element = students[0]
+    mutated_array = mutate_array(students)
+    fixed_element = mutated_array.shift()
+    shuffled_array = mutated_array
 
     (number_of_unique_matches).times do
       array_of_pairings << do_robin_round(fixed_element, shuffled_array)
@@ -105,6 +108,12 @@ end
       shuffled_array.rotate!
     end
     array_of_pairings.shuffle
+  end
+
+  def self.mutate_array(array)
+    first_half = array.first(array.length/2)
+    last_half = array.last(array.length/2).reverse
+    first_half.concat(last_half)
   end
 
   def self.number_of_robin_rounds
@@ -122,9 +131,10 @@ end
 
   def self.add_round_to_hash(array)
     hash={}
+    # array=mutate_array(array)
     number = array.length
     (number/2).times do |index|
-      hash[array[index]] = array[index+number/2]
+      hash[array[index]] = array[-1-index]
     end
     hash
   end
