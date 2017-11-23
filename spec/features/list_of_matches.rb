@@ -84,7 +84,7 @@ describe "Current user viewing the list of matches" do
     expect_five_different_matches
   end
 
-  it "regenerates random matches" do
+  it "regenerates random 5 matches" do
     visit matches_url
 
     create_five_matches
@@ -103,6 +103,15 @@ describe "Current user viewing the list of matches" do
     # pairing3 = pairing3.map{|a| a.text}
 
     expect(two_pairings1).not_to eql(two_pairings2)
+  end
+  it "generates random 5 matches after regenerating first" do
+    visit matches_url
+
+    set_date_and_create_match(set_day(0))
+
+    create_five_matches
+    expect_five_different_matches
+
   end
 
   it "student sees only past matches" do

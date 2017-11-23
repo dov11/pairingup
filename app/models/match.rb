@@ -48,7 +48,6 @@ class Match < ApplicationRecord
         match[:pairing] = shuffled_pairings[pairings_to_shuffle_index]
         match.save
       end
-      @@pairings[match_index(match)] = shuffled_pairings[pairings_to_shuffle_index]
       pairings_to_shuffle_index+=1
     end
   end
@@ -59,16 +58,21 @@ class Match < ApplicationRecord
     end
   end
 
-  def self.pairings_to_shuffle(match)(match)
+  def self.pairings_to_shuffle(match)
     pairings_to_shuffle_array=[]
-    indexes_of_this_and_later_matchings(match).each do |index|
+    indexes=indexes_of_this_and_later_matchings(match)
+    indexes.each do |index|
       pairings_to_shuffle_array<<@@pairings[index]
     end
-    pairings_to_shuffle_array.shuffle
+    pairings_to_shuffle_array.shuffle!
+    indexes.each do |index|
+      @@pairings[index]=pairings_to_shuffle_array[index]
+    end
+    pairings_to_shuffle_array
   end
 
   def self.indexes_of_this_and_later_matchings(match)
-    index = match_index(match)
+    index = match_index(match)-1
     indexes=[]
     number_of_pairings_to_shuffle(match).times do
       indexes << index
