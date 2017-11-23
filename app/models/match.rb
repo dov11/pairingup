@@ -41,15 +41,22 @@ class Match < ApplicationRecord
 #---end of creating block
 # block of methods for overwriting previously created matchings
   def self.overwrite_this_and_later_matchings(match)
-    shuffled_pairings=pairings_to_shuffle(match)
-    pairings_to_shuffle_index=0
+    # shuffled_pairings=pairings_to_shuffle(match)
+    # pairings_to_shuffle_index=0
+    # matches_to_overwrite(match).each do |match|
+    #   if match
+    #     match[:pairing] = shuffled_pairings[pairings_to_shuffle_index]
+    #     match.save
+    #   end
+    #   pairings_to_shuffle_index+=1
+    # end
+    pairings_to_shuffle(match)
     matches_to_overwrite(match).each do |match|
       if match
-        match[:pairing] = shuffled_pairings[pairings_to_shuffle_index]
-        match.save
-      end
-      pairings_to_shuffle_index+=1
-    end
+          match[:pairing] = @@pairings[match_index(match)]
+          match.save
+        end
+end
   end
 
   def self.matches_to_overwrite(match)
