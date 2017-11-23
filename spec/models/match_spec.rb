@@ -26,12 +26,15 @@ RSpec.describe Match, type: :model do
         {"1 A"=>"6 F", "2 B"=>"4 D", "3 C"=>"5 E"}
       ].map{|hash| hash.to_a}.flatten.sort
     end
+    def create_a_match(day)
+      Match.create_match(DateTime.new(2017,11,day))
+    end
     def create_five_matches
-      Match.create_match(DateTime.new(2017,11,22))
-      Match.create_match(DateTime.new(2017,11,23))
-      Match.create_match(DateTime.new(2017,11,24))
-      Match.create_match(DateTime.new(2017,11,25))
-      Match.create_match(DateTime.new(2017,11,26))
+      create_a_match(22)
+      create_a_match(23)
+      create_a_match(24)
+      create_a_match(25)
+      create_a_match(26)
     end
     def pairings_as_array_of_arrays
       Match.all.map{|match| match[:pairing].to_a}
@@ -56,7 +59,7 @@ RSpec.describe Match, type: :model do
 
       create_five_matches
       pairings_before = pairings_as_array_of_arrays
-      Match.create_match(DateTime.new(2017,11,22))
+      create_a_match(22)
       pairings_after = pairings_as_array_of_arrays
 
       expect(pairings_as_array_of_arrays.flatten.sort)
@@ -64,5 +67,12 @@ RSpec.describe Match, type: :model do
 
       expect(pairings_before).not_to eq pairings_after
     end
+    # it "creates 2 matches, overwrightes them adds 3 more" do
+    #   Match.create_match(DateTime.new(2017,11,22))
+    #   Match.create_match(DateTime.new(2017,11,24))
+    #   Match.create_match(DateTime.new(2017,11,22))
+    #   Match.create_match(DateTime.new(2017,11,22))
+    #
+    # end
   end
 end
