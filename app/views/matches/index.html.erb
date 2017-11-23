@@ -1,4 +1,4 @@
-<%unless current_user.try(:admin?)%>
+<%unless current_user.try(:admin?) || Match.count == 0%>
 <div class="panel">Your partner for today: <%=@partner%></div>
 <%end%>
 

@@ -1,7 +1,7 @@
 class MatchesController < ApplicationController
   def index
     @matches = get_matches
-    @partner = partner_of_the_day unless current_user.try(:admin?)
+    @partner = partner_of_the_day unless current_user.try(:admin?) || Match.count == 0
   end
 
   def show
