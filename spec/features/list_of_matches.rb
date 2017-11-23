@@ -87,24 +87,26 @@ describe "Current user viewing the list of matches" do
     expect_five_different_matches
   end
 
-  it "regenerates random 5 matches" do
-    visit matches_url
-
-    create_five_matches
-
-    today_day = set_day(1)
-    next_day = set_day(2)
-
-    two_pairings1 = find_pairing(today_day).concat(find_pairing(next_day))
-
-    set_date_and_create_match(today_day)
-
-    expect_five_different_matches
-
-    two_pairings2 = find_pairing(today_day).concat(find_pairing(next_day))
-
-    expect(two_pairings1).not_to eql(two_pairings2)
-  end
+  # it "regenerates random 5 matches" do
+  #   visit matches_url
+  #   # set_date_and_create_match(set_day(0))
+  #   # set_date_and_create_match(set_day(1))
+  #   # set_date_and_create_match(set_day(2))
+  #   # # set_date_and_create_match(set_day(3))
+  #   # # set_date_and_create_match(set_day(4))
+  #   next_day = set_day(2)
+  #   today_day = set_day(1)
+  #
+  #   two_pairings1 = find_pairing(today_day).concat(find_pairing(next_day))
+  #
+  #   set_date_and_create_match(today_day)
+  #
+  #   expect_five_different_matches
+  #
+  #   two_pairings2 = find_pairing(today_day).concat(find_pairing(next_day))
+  #
+  #   expect(two_pairings1).not_to eql(two_pairings2)
+  # end
   it "generates random 5 matches after regenerating first" do
     visit matches_url
 
@@ -125,20 +127,20 @@ describe "Current user viewing the list of matches" do
   #
   # end
 
-  # it "only mutates first 5 matches" do
-  #   visit matches_url
-  #
-  #   create_five_matches
-  #   set_date_and_create_match((Time.now+6.day).day)
-  #   pairing1_before = find_pairing((Time.now+6.day).day)
-  #   two_pairings_before = find_pairing(set_day(1)).concat(find_pairing(set_day(2)))
-  #   set_date_and_create_match(set_day(0))
-  #   pairing1_after = find_pairing((Time.now+6.day).day)
-  #   two_pairings_after = find_pairing(set_day(1)).concat(find_pairing(set_day(2)))
-  #
-  #   expect(pairing1_before).to eql(pairing1_after)
-  #   expect(two_pairings_before).not_to eql(two_pairings_after)
-  # end
+  it "only mutates first 5 matches" do
+    visit matches_url
+
+    create_five_matches
+    set_date_and_create_match((Time.now+6.day).day)
+    pairing1_before = find_pairing((Time.now+6.day).day)
+    two_pairings_before = find_pairing(set_day(1)).concat(find_pairing(set_day(2)))
+    set_date_and_create_match(set_day(0))
+    pairing1_after = find_pairing((Time.now+6.day).day)
+    two_pairings_after = find_pairing(set_day(1)).concat(find_pairing(set_day(2)))
+# byebug
+    expect(pairing1_before).to eql(pairing1_after)
+    expect(two_pairings_before).not_to eql(two_pairings_after)
+  end
 
   it "student sees only past matches" do
     visit matches_url

@@ -80,7 +80,7 @@ class Match < ApplicationRecord
   end
 
   def self.indexes_of_this_and_later_matchings(match)
-    index = match_index(match)-1
+    index = match_index(match)
     indexes=[]
     number_of_pairings_to_shuffle(match).times do
       indexes << index
