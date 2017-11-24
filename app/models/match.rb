@@ -196,7 +196,7 @@ class Match < ApplicationRecord
   end
 
   def users_partner(full_name)
-    self.pairing[full_name] ? self.pairing[full_name] : self.pairing.keys[0]
+    self.pairing[full_name] ? self.pairing[full_name] : self.pairing.key(full_name)
   end
   #----end of students -helper-block
   def self.sort_by_pairing_date

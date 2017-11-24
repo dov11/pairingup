@@ -63,9 +63,9 @@ end
 
 describe "Current user viewing the list of matches" do
   before { login_as admin }
-  let!(:admin) {create :user, email: "admin_@gmail.com", admin: true}
+  let!(:admin) {create :user, email: "admin_@gmail.com", password: "123456", admin: true}
   let!(:user1) {create :user, email: "user1@gmail.com", password: "123456", admin: false}
-  let!(:user2) {create :user, email: "user2@gmail.com", admin: false}
+  let!(:user2) {create :user, email: "user2@gmail.com", password: "123456", admin: false}
   let!(:user3) {create :user, email: "user3@gmail.com", admin: false}
   let!(:user4) {create :user, email: "user4@gmail.com", admin: false}
   let!(:user5) {create :user, email: "user5@gmail.com", admin: false}
@@ -151,6 +151,35 @@ describe "Current user viewing the list of matches" do
 
     expect_only_two_matches
     expect(page).to have_content("Your partner for today:")
+  end
+  it "students sees their partner of the day" do
+    visit matches_url
+
+    set_date_and_create_match(set_day(0))
+    set_date_and_create_match(set_day(1))
+    click_on("Log out")
+
+    login("user2@gmail.com", "123456")
+    # byebug
+    partner_before = page.find('#partner').text
+    click_on("#{Time.now.year}-#{Time.now.month}-#{Time.now.day}")
+    partner_in_the_show_page_before = page.find('#partner').text
+    click_on("Log out")
+    login("admin_@gmail.com", "123456")
+    visit matches_url
+    set_date_and_create_match(set_day(0))
+    set_date_and_create_match(set_day(0))
+    # set_date_and_create_match(set_day(0))
+
+    click_on("Log out")
+    login("user2@gmail.com", "123456")
+    partner_after = page.find('#partner').text
+    click_on("#{Time.now.year}-#{Time.now.month}-#{Time.now.day}")
+    partner_in_the_show_page_after = page.find('#partner').text
+    # byebug
+    expect(partner_before).not_to eq(partner_after)
+    expect(partner_before).to eq(partner_in_the_show_page_before)
+    expect(partner_after).to eq(partner_in_the_show_page_after)
   end
 
 
