@@ -17,11 +17,6 @@ class MatchesController < ApplicationController
     end
   end
 
-  # def destroy
-  #   Match.find(params[:id])
-  #   redirect_to matches_path
-  # end
-
   private
   def user_full_name
     current_user.profile.full_name

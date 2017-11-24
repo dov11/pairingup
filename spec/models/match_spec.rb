@@ -117,7 +117,6 @@ RSpec.describe Match, type: :model do
       create_8_matches_with_a_gap
       create_a_match(21)
       create_a_match(22)
-      # byebug
       expect(first_5_pairings_as_array_of_arrays.flatten.sort).to eq possible_combinations_flat
       expect(last_5_pairings_as_array_of_arrays.flatten.sort).to eq possible_combinations_flat
     end

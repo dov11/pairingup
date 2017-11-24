@@ -57,10 +57,6 @@ def find_pairing(day)
   return pairing
 end
 
-# def find_two_pairings
-#   find_pairing(today_day)
-# end
-
 describe "Current user viewing the list of matches" do
   before { login_as admin }
   let!(:admin) {create :user, email: "admin_@gmail.com", password: "123456", admin: true}
@@ -86,26 +82,6 @@ describe "Current user viewing the list of matches" do
     expect_five_different_matches
   end
 
-  # it "regenerates random 5 matches" do
-  #   visit matches_url
-  #   # set_date_and_create_match(set_day(0))
-  #   # set_date_and_create_match(set_day(1))
-  #   # set_date_and_create_match(set_day(2))
-  #   # # set_date_and_create_match(set_day(3))
-  #   # # set_date_and_create_match(set_day(4))
-  #   next_day = set_day(2)
-  #   today_day = set_day(1)
-  #
-  #   two_pairings1 = find_pairing(today_day).concat(find_pairing(next_day))
-  #
-  #   set_date_and_create_match(today_day)
-  #
-  #   expect_five_different_matches
-  #
-  #   two_pairings2 = find_pairing(today_day).concat(find_pairing(next_day))
-  #
-  #   expect(two_pairings1).not_to eql(two_pairings2)
-  # end
   it "generates random 5 matches after regenerating first" do
     visit matches_url
 
@@ -116,14 +92,6 @@ describe "Current user viewing the list of matches" do
     expect_five_different_matches
   end
 
-  # it "generates 4 matches, regenerates them, adds one more" do
-  #   visit matches_url
-  #   create_four_matches
-  #   set_date_and_create_match(set_day(1))
-  #   set_date_and_create_match(set_day(4))
-  #   expect_five_different_matches
-  #
-  # end
 
   it "only mutates first 5 matches" do
     visit matches_url
@@ -169,14 +137,12 @@ describe "Current user viewing the list of matches" do
     visit matches_url
     set_date_and_create_match(set_day(0))
     set_date_and_create_match(set_day(0))
-    # set_date_and_create_match(set_day(0))
 
     click_on("Log out")
     login("user2@gmail.com", "123456")
     partner_after = page.find('#partner').text
     click_on("#{Time.now.year}-#{Time.now.month}-#{Time.now.day}")
     partner_in_the_show_page_after = page.find('#partner').text
-    # byebug
     expect(partner_before).not_to eq(partner_after)
     expect(partner_before).to eq(partner_in_the_show_page_before)
     expect(partner_after).to eq(partner_in_the_show_page_after)
