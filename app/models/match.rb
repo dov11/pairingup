@@ -87,8 +87,10 @@ class Match < ApplicationRecord
       pairings_to_shuffle_array<<@@pairings[index]
     end
     pairings_to_shuffle_array.shuffle!
+    pairings_to_shuffle_array_index=0
     indexes.each do |index|
-      @@pairings[index]=pairings_to_shuffle_array[index]
+      @@pairings[index]=pairings_to_shuffle_array[pairings_to_shuffle_array_index]
+      pairings_to_shuffle_array_index+=1
     end
     pairings_to_shuffle_array
   end
