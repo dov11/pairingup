@@ -4,7 +4,7 @@ class Match < ApplicationRecord
   def self.pairings
     @@pairings
   end
-
+  
   def self.create_match(date)
     @@pairings ||= create_array_of_pairings(students_names)
     if same_day?(date)
@@ -23,7 +23,7 @@ class Match < ApplicationRecord
   def self.match_to_be_created_is_earlier_than_others?(date)
     Match.all.select{|match| match[:pairing_date]>date}.length>0
   end
-# block of methods to insert matching inbetween
+  # block of methods to insert matching inbetween
   def self.collect_later_matches(date)
     Match.sort_by_pairing_date.all.select{|match| match[:pairing_date]>date}
   end
@@ -37,8 +37,8 @@ class Match < ApplicationRecord
     collect_later_matches(date).each {|match| match.destroy}
     later_dates.each{|date| create_consequent_match(date)}
   end
-# end of insert -block
-# block of methods for adding consequent new matches
+  # end of insert -block
+  # block of methods for adding consequent new matches
   def self.pairings_run_out?
     @@pairings.length==number_of_robin_rounds*Match.count
   end
@@ -62,8 +62,8 @@ class Match < ApplicationRecord
   def self.match_index(match)
     Match.sort_by_pairing_date.all.index(match)
   end
-#---end of creating block
-# block of methods for overwriting previously created matchings
+  #---end of creating block
+  # block of methods for overwriting previously created matchings
   def self.overwrite_this_and_later_matchings(match)
     pairings_to_shuffle(match)
     matches_to_overwrite(match).each do |match|
@@ -109,8 +109,8 @@ class Match < ApplicationRecord
     index_in_the_round_robin = match_index(match) % number_of_unique_matches
     number_of_pairings_to_shuffle = number_of_unique_matches - index_in_the_round_robin
   end
-# ---end of overwriting -block
-# block of round robin methods
+  # ---end of overwriting -block
+  # block of round robin methods
   def self.create_array_of_pairings(students)
     array_of_pairings = []
     mutated_array = mutate_array(students)
@@ -153,8 +153,8 @@ class Match < ApplicationRecord
     end
     hash
   end
-# ---end of robin -block
-# block of helper methods
+  # ---end of robin -block
+  # block of helper methods
   def self.same_day?(date)
     return false unless Match.find_by(pairing_date: date)
     Match.find_by(pairing_date: date).pairing_date.day == date.day &&
@@ -189,10 +189,10 @@ class Match < ApplicationRecord
   end
 
   def self.show_match_of_the_day
-      matches = Match.select do |match|
-        match.pairing_date==DateTime.new(Time.now.year, Time.now.month, Time.now.day)
-      end
-      matches[0]
+    matches = Match.select do |match|
+      match.pairing_date==DateTime.new(Time.now.year, Time.now.month, Time.now.day)
+    end
+    matches[0]
   end
 
   def users_partner(full_name)
@@ -206,5 +206,5 @@ class Match < ApplicationRecord
   def nice_date
     "#{pairing_date.year}-#{pairing_date.month}-#{pairing_date.day}"
   end
-# ---end of helper-block
+  # ---end of helper-block
 end

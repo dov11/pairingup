@@ -6,7 +6,7 @@ describe "Current user viewing the list of users" do
 
   let!(:adminProfile) {create :profile, first_name: "Admin", last_name: "The Admin", user: admin}
   let!(:profile1) {create :profile, first_name: "1", last_name: "A", user: user1}
-  
+
   def login(email, password)
     fill_in "Email", with: email
     fill_in "Password", with: password

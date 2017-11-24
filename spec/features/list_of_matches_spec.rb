@@ -103,7 +103,7 @@ describe "Current user viewing the list of matches" do
     set_date_and_create_match(set_day(0))
     pairing1_after = find_pairing((Time.now+6.day).day)
     two_pairings_after = find_pairing(set_day(1)).concat(find_pairing(set_day(2)))
-# byebug
+    # byebug
     expect(pairing1_before).to eql(pairing1_after)
     expect(two_pairings_before).not_to eql(two_pairings_after)
   end
