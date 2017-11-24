@@ -131,5 +131,16 @@ RSpec.describe Match, type: :model do
       expect(pairings_as_array_of_arrays.flatten.sort)
       .to eq possible_combinations_flat
     end
+    it "creates 2 matches, overwrites the last one" do
+      create_a_match(20)
+      create_a_match(21)
+      pairing_before = Match.last[:pairing].to_a
+      create_a_match(21)
+      pairing_after = Match.last[:pairing].to_a
+
+      expect(pairing_before).not_to eq(pairing_after)
+      byebug
+      expect(Match.pairings.length).to eq(Match.pairings.compact.length)
+    end
   end
 end
