@@ -1,5 +1,5 @@
 <%unless current_user.try(:admin?) || Match.count == 0%>
-<div class="panel">Your partner for today: <%=@partner%></div>
+<div class="panel">Your partner for today: <span id='partner'><%=@partner%></span></div>
 <%end%>
 
 <h1> Matches:</h1>

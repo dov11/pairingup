@@ -81,7 +81,7 @@ RSpec.describe Match, type: :model do
       create_a_match(22)
       pairings_after = pairings_as_array_of_arrays
 
-      expect(pairings_as_array_of_arrays.flatten.sort)
+      expect(first_5_pairings_as_array_of_arrays.flatten.sort)
       .to eq possible_combinations_flat
 
       expect(pairings_before).not_to eq pairings_after
@@ -95,7 +95,7 @@ RSpec.describe Match, type: :model do
       pairings_after = pairings_as_array_of_arrays
       3.times {|day| create_a_match(25+day)}
 
-      expect(pairings_as_array_of_arrays.flatten.sort)
+      expect(first_5_pairings_as_array_of_arrays.flatten.sort)
       .to eq possible_combinations_flat
       expect(pairings_before).not_to eq pairings_after
     end
@@ -128,7 +128,7 @@ RSpec.describe Match, type: :model do
       create_a_match(21)
       2.times {|day| create_a_match(23+day)}
 
-      expect(pairings_as_array_of_arrays.flatten.sort)
+      expect(first_5_pairings_as_array_of_arrays.flatten.sort)
       .to eq possible_combinations_flat
     end
     it "creates 2 matches, overwrites the last one" do
@@ -139,8 +139,30 @@ RSpec.describe Match, type: :model do
       pairing_after = Match.last[:pairing].to_a
 
       expect(pairing_before).not_to eq(pairing_after)
-      byebug
       expect(Match.pairings.length).to eq(Match.pairings.compact.length)
+    end
+
+    it "create 4 matches with a gap, change last, change first, fill the gap" do
+      create_a_match(20)
+      create_a_match(21)
+      create_a_match(23)
+      create_a_match(24)
+      create_a_match(24)
+      create_a_match(20)
+      create_a_match(22)
+      expect(first_5_pairings_as_array_of_arrays.flatten.sort)
+      .to eq possible_combinations_flat
+    end
+
+    it "create 2 matches, create yesterday, create 1 with a gap, recreate middle fill the gap" do
+      create_a_match(20)
+      create_a_match(21)
+      create_a_match(19)
+      create_a_match(23)
+      create_a_match(21)
+      create_a_match(22)
+      expect(first_5_pairings_as_array_of_arrays.flatten.sort)
+      .to eq possible_combinations_flat
     end
   end
 end
