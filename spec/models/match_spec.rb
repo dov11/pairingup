@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Match, type: :model do
-  # before(:each) do
-  #  end
   describe ".create_array_of_pairings" do
     let!(:user1) {create :user, email: "user1@gmail.com", password: "123456", admin: false}
     let!(:user2) {create :user, email: "user2@gmail.com", admin: false}
@@ -17,6 +15,7 @@ RSpec.describe Match, type: :model do
     let!(:profile4) {create :profile, first_name: "4", last_name: "D", user: user4}
     let!(:profile5) {create :profile, first_name: "5", last_name: "E", user: user5}
     let!(:profile6) {create :profile, first_name: "6", last_name: "F", user: user6}
+
     def possible_combinations_flat
       [
         {"1 A"=>"2 B", "3 C"=>"4 D", "5 E"=> "6 F"},
@@ -26,9 +25,11 @@ RSpec.describe Match, type: :model do
         {"1 A"=>"6 F", "2 B"=>"4 D", "3 C"=>"5 E"}
       ].map{|hash| hash.to_a}.flatten.sort
     end
+
     def create_a_match(day)
       Match.create_match(DateTime.new(2017,11,day))
     end
+
     def create_five_matches
       create_a_match(22)
       create_a_match(23)
@@ -36,26 +37,32 @@ RSpec.describe Match, type: :model do
       create_a_match(25)
       create_a_match(28)
     end
+
     def create_8_matches_with_a_gap
       create_a_match(19)
       create_a_match(20)
       6.times {|day| create_a_match(23+day)}
     end
+
     def pairings_as_array_of_arrays
       Match.all.map{|match| match[:pairing].to_a}
     end
+
     def first_5_pairings_as_array_of_arrays
       Match.first(5).map{|match| match[:pairing].to_a}
     end
+
     def last_5_pairings_as_array_of_arrays
       Match.last(5).map{|match| match[:pairing].to_a}
     end
+
     it "returnes all possible combinations" do
       expect(Match.create_array_of_pairings(Match.students_names)
       .map{|hash| hash.to_a}
       .flatten.sort)
       .to eq possible_combinations_flat
     end
+
     it "creates consequent matches" do
       Match.class_eval {class_variable_set :@@pairings, Match.create_array_of_pairings(Match.students_names)}
       create_five_matches
@@ -64,6 +71,7 @@ RSpec.describe Match, type: :model do
       expect(pairings_as_array_of_arrays.flatten.sort)
       .to eq possible_combinations_flat
     end
+
     it "overwrightes 5 matches" do
       Match.destroy_all
       Match.class_eval {class_variable_set :@@pairings, Match.create_array_of_pairings(Match.students_names)}
@@ -78,6 +86,7 @@ RSpec.describe Match, type: :model do
 
       expect(pairings_before).not_to eq pairings_after
     end
+
     it "creates 2 matches, overwrightes them adds 3 more" do
       create_a_match(22)
       create_a_match(24)
@@ -90,6 +99,7 @@ RSpec.describe Match, type: :model do
       .to eq possible_combinations_flat
       expect(pairings_before).not_to eq pairings_after
     end
+
     it "creates 7 matches, overwrites only first 5" do
       5.times {|day| create_a_match(22+day)}
       pairings_before = pairings_as_array_of_arrays
@@ -102,6 +112,7 @@ RSpec.describe Match, type: :model do
       expect(pairings_before).not_to eq pairings_after
       expect(last_2_pairings_before).to eq last_2_pairings_after
     end
+
     it "creates 8 matches with 2-day gap, fills the gap" do
       create_8_matches_with_a_gap
       create_a_match(21)
@@ -109,6 +120,16 @@ RSpec.describe Match, type: :model do
       # byebug
       expect(first_5_pairings_as_array_of_arrays.flatten.sort).to eq possible_combinations_flat
       expect(last_5_pairings_as_array_of_arrays.flatten.sort).to eq possible_combinations_flat
+    end
+
+    it "creates 2 matches with a gap fills the gap adds 2 more matches" do
+      create_a_match(20)
+      create_a_match(22)
+      create_a_match(21)
+      2.times {|day| create_a_match(23+day)}
+
+      expect(pairings_as_array_of_arrays.flatten.sort)
+      .to eq possible_combinations_flat
     end
   end
 end
